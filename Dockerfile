@@ -78,52 +78,22 @@ RUN echo "Building OpenSSL" && \
 # interact with the user or fool around with TTYs.  We also set the default
 # `--target` to musl so that our users don't need to keep overriding it
 # manually.
+USER rust
 ENV PATH="/home/rust/.cargo/bin:${PATH}" \
     CARGO_HOME="/home/rust/.cargo" \
-    RUSTUP_HOME="/home/rust/.rustup"
-RUN mkdir -p ${CARGO_HOME} && \
-    curl https://sh.rustup.rs -sSf | \
-        sh -s -- -y --default-toolchain $TOOLCHAIN && \
-    rustup target add x86_64-unknown-linux-musl && \
-    chown -R rust: /home/rust
-    
-#ADD cargo-config.toml /home/rust/.cargo/config
-# Set up a `git credentials` helper for using GH_USER and GH_TOKEN to access
-# private repositories if desired.
-#ADD git-credential-ghtoken /usr/local/bin/ghtoken
-#RUN git config --global credential.https://github.com.helper ghtoken
-
-#RUN echo "Building zlib" && \
-#    cd /tmp && \
-#    ZLIB_VERSION=1.2.11 && \
-#    curl -LO "http://zlib.net/zlib-$ZLIB_VERSION.tar.gz" && \
-#    tar xzf "zlib-$ZLIB_VERSION.tar.gz" && cd "zlib-$ZLIB_VERSION" && \
-#    CC=musl-gcc ./configure --static --prefix=/usr/local/musl && \
-#    make && sudo make install && \
-#    rm -r /tmp/*
-
-#RUN echo "Building libpq" && \
-#    cd /tmp && \
-#    POSTGRESQL_VERSION=11.2 && \
-#    curl -LO "https://ftp.postgresql.org/pub/source/v$POSTGRESQL_VERSION/postgresql-$POSTGRESQL_VERSION.tar.gz" && \
-#    tar xzf "postgresql-$POSTGRESQL_VERSION.tar.gz" && cd "postgresql-$POSTGRESQL_VERSION" && \
-#    CC=musl-gcc CPPFLAGS=-I/usr/local/musl/include LDFLAGS=-L/usr/local/musl/lib ./configure --with-openssl --without-readline --prefix=/usr/local/musl && \
-#    cd src/interfaces/libpq && make all-static-lib && sudo make install-lib-static && \
-#    cd ../../bin/pg_config && make && sudo make install && \
-#    rm -r /tmp/*
-
-ENV OPENSSL_DIR=/usr/local/musl/ \
+    RUSTUP_HOME="/home/rust/.rustup" \
+    OPENSSL_DIR=/usr/local/musl/ \
     OPENSSL_INCLUDE_DIR=/usr/local/musl/include/ \
     DEP_OPENSSL_INCLUDE=/usr/local/musl/include/ \
     OPENSSL_LIB_DIR=/usr/local/musl/lib/ \
     OPENSSL_STATIC=1 \
-    PQ_LIB_STATIC_X86_64_UNKNOWN_LINUX_MUSL=1 \
-    PG_CONFIG_X86_64_UNKNOWN_LINUX_GNU=/usr/bin/pg_config \
     PKG_CONFIG_ALLOW_CROSS=true \
     PKG_CONFIG_ALL_STATIC=true \
-    LIBZ_SYS_STATIC=1 \
     TARGET=musl
-
+RUN mkdir -p ${CARGO_HOME} \
+    && curl https://sh.rustup.rs -sSf | sh -s -- -y --default-toolchain $TOOLCHAIN \
+    && rustup target add x86_64-unknown-linux-musl \
+    && chown -R rust: /home/rust
 # (Please feel free to submit pull requests for musl-libc builds of other C
 # libraries needed by the most popular and common Rust crates, to avoid
 # everybody needing to build them manually.)
@@ -135,10 +105,6 @@ ENV OPENSSL_DIR=/usr/local/musl/ \
 # but cargo-deny provides a super-set of cargo-audit's features.
 RUN rm -rf /home/rust/.cargo/registry/
 
-# Run all further code as user `rust`, and create our working directories
-# as the appropriate user.
-USER rust
-RUN mkdir -p /home/rust/libs /home/rust/src
 
 # Set up our path with all our binary directories, including those for the
 # musl-gcc toolchain and for our Rust toolchain.
