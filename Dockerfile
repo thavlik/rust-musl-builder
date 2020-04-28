@@ -18,8 +18,6 @@ ARG OPENSSL_SOURCE=https://ftp.openssl.org/source/old/1.0.2/openssl-1.0.2r.tar.g
 # We also set up a `rust` user by default, in whose account we'll install
 # the Rust toolchain.  This user has sudo privileges if you need to install
 # any more software.
-#
-# `mdbook` is the standard Rust tool for making searchable HTML manuals.
 RUN apt-get update && \
     apt-get install -y \
         build-essential \
@@ -37,7 +35,6 @@ RUN apt-get update && \
 
 # Static linking for C++ code
 RUN ln -s "/usr/bin/g++" "/usr/bin/musl-g++"
-
 
 # Build a static library version of OpenSSL using musl-libc.  This is needed by
 # the popular Rust `hyper` crate.
