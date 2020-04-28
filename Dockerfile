@@ -33,17 +33,7 @@ RUN apt-get update && \
         xutils-dev \
         && \
     apt-get clean && rm -rf /var/lib/apt/lists/* && \
-    useradd rust --user-group --create-home --shell /bin/bash && \
-    MDBOOK_VERSION=0.3.6 && \
-    curl -LO https://github.com/rust-lang-nursery/mdBook/releases/download/v$MDBOOK_VERSION/mdbook-v$MDBOOK_VERSION-x86_64-unknown-linux-gnu.tar.gz && \
-    tar xf mdbook-v$MDBOOK_VERSION-x86_64-unknown-linux-gnu.tar.gz && \
-    mv mdbook /usr/local/bin/ && \
-    rm -f mdbook-v$MDBOOK_VERSION-x86_64-unknown-linux-gnu.tar.gz && \
-    DENY_VERSION=0.6.6 && \
-    curl -LO https://github.com/EmbarkStudios/cargo-deny/releases/download/$DENY_VERSION/cargo-deny-$DENY_VERSION-x86_64-unknown-linux-musl.tar.gz && \
-    tar xf cargo-deny-$DENY_VERSION-x86_64-unknown-linux-musl.tar.gz && \
-    mv cargo-deny-$DENY_VERSION-x86_64-unknown-linux-musl/cargo-deny /usr/local/bin/ && \
-    rm -rf cargo-deny-$DENY_VERSION-x86_64-unknown-linux-musl cargo-deny-$DENY_VERSION-x86_64-unknown-linux-musl.tar.gz
+    useradd rust --user-group --create-home --shell /bin/bash
 
 # Static linking for C++ code
 RUN ln -s "/usr/bin/g++" "/usr/bin/musl-g++"
