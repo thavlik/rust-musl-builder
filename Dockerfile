@@ -5,11 +5,10 @@ FROM ubuntu:18.04
 # The Rust toolchain to use when building our image.
 ARG TOOLCHAIN=stable
 
-# The OpenSSL version to use. We parameterize this because many Rust
-# projects will fail to build with 1.1.
-ARG OPENSSL_VERSION=1.0.2r
+# The OpenSSL version to use
+ARG OPENSSL_VERSION=1.1.1n
 # Necessary because openssl download links are now broken
-ARG OPENSSL_SOURCE=https://ftp.openssl.org/source/old/1.0.2/openssl-1.0.2r.tar.gz
+ARG OPENSSL_SOURCE=https://ftp.openssl.org/source/old/1.1.1/openssl-1.1.1n.tar.gz
 
 # Make sure we have basic dev tools for building C libraries.  Our goal
 # here is to support the musl-libc builds and Cargo builds needed for a
