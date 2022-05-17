@@ -2,7 +2,7 @@
 # Use Ubuntu 18.04 LTS as our base image.
 FROM ubuntu:18.04
 
-# The Rust toolchain to use when building our image.  Set by `hooks/build`.
+# The Rust toolchain to use when building our image.
 ARG TOOLCHAIN=stable
 
 # The OpenSSL version to use. We parameterize this because many Rust
@@ -66,17 +66,17 @@ RUN echo "Building OpenSSL" && \
 # `--target` to musl so that our users don't need to keep overriding it
 # manually.
 USER rust
-ENV PATH="/home/rust/.cargo/bin:${PATH}" \
-    CARGO_HOME="/home/rust/.cargo" \
-    RUSTUP_HOME="/home/rust/.rustup" \
-    OPENSSL_DIR=/usr/local/musl/ \
-    OPENSSL_INCLUDE_DIR=/usr/local/musl/include/ \
-    DEP_OPENSSL_INCLUDE=/usr/local/musl/include/ \
-    OPENSSL_LIB_DIR=/usr/local/musl/lib/ \
-    OPENSSL_STATIC=1 \
-    PKG_CONFIG_ALLOW_CROSS=true \
-    PKG_CONFIG_ALL_STATIC=true \
-    TARGET=musl
+ENV PATH="/home/rust/.cargo/bin:${PATH}"
+ENV CARGO_HOME="/home/rust/.cargo"
+ENV RUSTUP_HOME="/home/rust/.rustup"
+ENV OPENSSL_DIR=/usr/local/musl/
+ENV OPENSSL_INCLUDE_DIR=/usr/local/musl/include/
+ENV DEP_OPENSSL_INCLUDE=/usr/local/musl/include/
+ENV OPENSSL_LIB_DIR=/usr/local/musl/lib/
+ENV OPENSSL_STATIC=1
+ENV PKG_CONFIG_ALLOW_CROSS=true
+ENV PKG_CONFIG_ALL_STATIC=true
+ENV TARGET=musl
 RUN mkdir -p ${CARGO_HOME} \
     && curl https://sh.rustup.rs -sSf | sh -s -- -y --default-toolchain $TOOLCHAIN \
     && rustup target add x86_64-unknown-linux-musl \
